@@ -1,0 +1,15 @@
+.header {
+	height: 100px;
+	width: 100%;
+	background: gray;
+}
+
+.left {
+	padding:5px 10px;
+	float: left;
+}
+
+.login {
+	padding: 5px 10px;
+	float: right;
+}

@@ -1,0 +1,22 @@
+{{ template "header" . }}
+</head>
+<body>
+	<header>
+	</header>
+	<center>
+		<div>
+			<div>
+				{{ .test }}
+			</div>
+			<form method="post" action="">
+				<label for="username">ログインID：</label>
+				<input type="text" name="username" id="username"><br>
+				<label for="password">パスワード：</label>
+				<input type="password" name="password" id="password">
+				<input type="submit" name="submit" value="ログイン">
+			</form>
+		</div>
+	</center>
+
+{{ template "footer" }}
+

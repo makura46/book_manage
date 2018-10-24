@@ -1,0 +1,29 @@
+{{ template "header" .}}
+	<link rel="stylesheet" type="text/css" href="assets/css/signup/signup.css">
+</head>
+<body>
+	<center>
+		<div class="back">
+			<h2 style="color: green;">新規登録</h2>
+			<form action="/signup" method="post">
+				<center>
+					<div>
+						<label for="name">ログインID：</label>
+						<input type="text" id="name" name="name"><br>
+						<label for="password">パスワード：</label>
+						<input type="password" id="password" name="password"><br>
+						<input type="submit" name="submit" value="新規登録" class="btn">
+					</div>
+				</center>
+			</form>
+			<form action="/login" method="get">
+				<center>
+					<div>
+						<input type="submit" value="ログイン" class="btn">
+					<div>
+				</center>
+			</form>
+		</div>
+	</center>
+
+{{ template "footer"}}
