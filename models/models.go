@@ -16,7 +16,7 @@ type User struct {
 }
 
 type BookTable struct {
-	Id			int		`gorm:"column:id;type:int;primary_key;NOT NULL;AUTO_INCREMENT"`
+	Id			int		`gorm:"column:id;primary_key;NOT NULL;AUTO_INCREMENT"`
 	Name		string	`gorm:"column:bookname;type:varchar(256);`
 	Read		int		`gorm:"column:read;type:int"`
 	Have		int		`gorm:"column:have;type:int"`
@@ -103,6 +103,13 @@ func SetSession(u *User) error {
 	open()
 	defer db.Close()
 	err := db.Model(u).Updates(u).Error
+	return err
+}
+
+func AddRecord(tableName string, book *BookTable) error {
+	open()
+	defer db.Close()
+	err := db.Table(tableName).Create(book).Error
 	return err
 }
 

@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"crypto/sha256"
 	"io"
-	"errors"
+	"strconv"
 
 	m "book_manage/models"
 )
@@ -15,15 +15,14 @@ import (
 var domain string = "localhost"
 
 func GetLogin(c *gin.Context) {
-	var err error = errors.New("tmp")
-	user, errU := c.Cookie("user")
-	secret, errS := c.Cookie("secret")
+	user, secret, err := sessionCheck(c, "user", "secret")
 	// sessionのチェック
-	if errU == nil && errS == nil {
+	if err == nil {
 		err = m.CheckSessionLogin(user, secret)
 	}
 	if err == nil {
 		c.Redirect(http.StatusMovedPermanently, "/home")
+		c.Abort()
 	} else {
 		c.HTML(http.StatusOK, "login.tmpl", gin.H{
 			"title": "Login page",
@@ -76,6 +75,11 @@ func GetSignUp(c *gin.Context) {
 
 func PostSignUp(c *gin.Context) {
 	name := c.PostForm("name")
+	if name == "" {
+		c.HTML(http.StatusOK, "signup.tmpl", gin.H{
+			"title": "SignUp",
+		})
+	}
 	password := c.PostForm("password")
 
 	//暗号化
@@ -111,19 +115,16 @@ func GetHome(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err)
 		c.Redirect(http.StatusMovedPermanently, "/login")
-		c.Abort()
 	}
 	session, err := c.Cookie("secret")
 	if err != nil {
 		fmt.Println(err)
 		c.Redirect(http.StatusMovedPermanently, "/login")
-		c.Abort()
 	}
 	err = m.CheckSessionLogin(name, session)
 	if err != nil {
 		fmt.Println(err)
 		c.Redirect(http.StatusMovedPermanently, "/login")
-		c.Abort()
 	} else {
 		book := m.GetBookData(name)
 		c.HTML(http.StatusOK, "home.tmpl", gin.H{"Book": book, "title": "Home", "name": name})
@@ -137,12 +138,67 @@ func Logout(c *gin.Context) {
 	c.Redirect(http.StatusMovedPermanently, "/")
 }
 
+func AddRecord(c *gin.Context) {
+	user, secret, err := sessionCheck(c, "user", "secret")
+	if err != nil {
+		c.Redirect(http.StatusMovedPermanently, "/login")
+	}
+	err = m.CheckSessionLogin(user, secret)
+	if err != nil {
+		c.Redirect(http.StatusMovedPermanently, "/login")
+	}
+	c.HTML(http.StatusOK, "addrecord.tmpl", gin.H{"title": "AddRecord", "user": user})
+}
+
+func PostRecord(c *gin.Context) {
+	user, secret, err := sessionCheck(c, "user", "secret")
+	if err != nil {
+		c.Redirect(http.StatusMovedPermanently, "/login")
+	}
+	err = m.CheckSessionLogin(user, secret)
+	if err != nil {
+		c.Redirect(http.StatusMovedPermanently, "/login")
+	}
+	title := c.PostForm("title")
+	readString := c.PostForm("read")
+	haveString := c.PostForm("have")
+	if title == "" {
+		c.HTML(http.StatusOK, "addrecord.tmpl", gin.H{"title": "AddRecord", "user": user})
+	}
+	var read, have int
+	read, err = strconv.Atoi(readString)
+	if err != nil {
+		c.HTML(http.StatusOK, "addrecord.tmpl", gin.H{"title": "AddRecord", "user": user})
+	}
+	have, err = strconv.Atoi(haveString)
+	if err != nil {
+		c.HTML(http.StatusOK, "addrecord.tmpl", gin.H{"title": "AddRecord", "user": user})
+	}
+	book := m.BookTable{Name: title, Read: read, Have: have}
+	m.AddRecord(user+"booktable", &book)
+	c.Redirect(http.StatusMovedPermanently, "/home")
+}
+
+
+
 func SessionDelete() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.SetCookie("user", "", -1, "/", domain, false, false)
 		c.SetCookie("secret", "", -1, "/", domain, false, false)
 		c.Next()
 	}
+}
+
+func sessionCheck(c *gin.Context, nameU, nameS string) (valueU, valueS string, err error) {
+	valueU, err = c.Cookie(nameU)
+	if err != nil {
+		return "", "", err
+	}
+	valueS, err = c.Cookie(nameS)
+	if err != nil {
+		return "", "", err
+	}
+	return valueU, valueS, err
 }
 
 

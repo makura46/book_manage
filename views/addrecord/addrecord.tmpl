@@ -1,0 +1,20 @@
+{{ template "header" .}}
+
+</head>
+<body>
+
+<h3>ようこそ{{ .user }}</h3>
+	
+	<center>
+		<form method="POST" action="">
+			タイトル：<input type="text" name="title"><br>
+			読了した巻：<input type="text" name="read"><br>
+			持っている巻：<input type="text" name="have"><br>
+			<input type="submit" value="追加">
+		</form>
+	</center><br>
+	<form method="GET" action="/home">
+		<input type="submit" value="戻る">
+	</form>
+
+{{ template "footer" }}

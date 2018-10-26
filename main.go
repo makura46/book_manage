@@ -26,6 +26,8 @@ func main() {
 	r.POST("/signup", c.PostSignUp)
 	r.GET("/home", c.GetHome)
 	r.POST("/logout", c.SessionDelete(), c.Logout)
+	r.GET("/addrecord", c.AddRecord)
+	r.POST("/addrecord", c.PostRecord)
 
 	r.GET("/test", c.Test)
 	r.GET("/setCookie", c.SetCookie)
