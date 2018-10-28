@@ -89,12 +89,12 @@ func CreateTable(bookTableName string) {
 }
 
 // テーブルからユーザの本情報を取得する
-func GetBookData(name string) []BookTable {
+func AllGetBookData(name string) []BookTable {
 	open()
 	defer db.Close()
 	tableName := name+"booktable"
 	var book []BookTable
-	db.Table(tableName).Find(&book)
+	db.Table(tableName).Order("id asc").Find(&book)
 	return book
 }
 
@@ -106,12 +106,39 @@ func SetSession(u *User) error {
 	return err
 }
 
+// 本の情報をidから取得する
+func GetBookData(tableName string, id int) (*BookTable, error) {
+	open()
+	defer db.Close()
+	bookData := BookTable{Id: id}
+	err := db.Table(tableName).First(&bookData).Error
+	fmt.Println(bookData)
+	return &bookData, err
+}
+
+// 本の情報を変更する
+func UpdateRecord(tableName string, book *BookTable, id int) error {
+	open()
+	defer db.Close()
+	fmt.Println(*book)
+	err := db.Table(tableName).Where("id = ?", id).Updates(book).Error
+	return err
+}
+
 func AddRecord(tableName string, book *BookTable) error {
 	open()
 	defer db.Close()
 	err := db.Table(tableName).Create(book).Error
 	return err
 }
+
+func DeleteBook(tableName string, book *BookTable) error {
+	open()
+	defer db.Close()
+	err := db.Table(tableName).Delete(book).Error
+	return err
+}
+
 
 func Find(user *User) {
 	open()

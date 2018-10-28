@@ -1,0 +1,14 @@
+{{ template "header" . }}
+
+</head>
+<body>
+	<form method="POST" action="/change">
+		<label id="name">タイトル：</label><input id="name" type="text" value="{{ .Book.Name }}" name="name"><br>
+		<label id="read">読了した巻：</label><input id="read" type="text" value="{{ .Book.Read }}" name="read"><br>
+		<label id="have">持っている巻：</label><input id="have" type="text" value="{{ .Book.Have }}" name="have"><br>
+		<input type="submit" value="変更">
+		<input type="hidden" name="id" value="{{ .Book.Id }}">
+	</form>
+	
+
+{{ template "footer" }}

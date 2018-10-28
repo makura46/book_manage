@@ -4,7 +4,7 @@
 <body>
 	<header>
 		<!--<a href="/logout"><h3>ログアウト</h3></a>-->
-		<form action="/logout" method="POST">
+		<form action="/logout" method="GET">
 			<input type="submit" value="ログアウト">
 		</form>
 	</header>
@@ -14,12 +14,26 @@
 			<td>タイトル</td>
 			<td>読了</td>
 			<td>取得巻</td>
+			<td></td>
+			<td></td>
 		</tr>
 		{{ range .Book }}
 		<tr>
 			<td>{{ .Name }}</td>
 			<td>{{ .Read }}</td>
 			<td>{{ .Have }}</td>
+			<td>
+				<form method="POST" action="/delete">
+					<input type="submit" value="削除"></td>
+					<input type="hidden" name="id" value="{{ .Id }}">
+				</form>
+			</td>
+			<td>
+				<form method="POST" action="/edit">
+					<input type="submit" value="変更"></td>
+					<input type="hidden" name="id" value="{{ .Id }}">
+				</form>
+			</td>
 		</tr>
 		{{ end }}
 	</table>
