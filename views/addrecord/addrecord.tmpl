@@ -6,7 +6,8 @@
 <h3>ようこそ{{ .user }}</h3>
 	
 	<center>
-		<form method="POST" action="">
+		<form method="POST" action="" enctype="multipart/form-data">
+			画像：<input type="file" name="img"><br>
 			タイトル：<input type="text" name="title"><br>
 			読了した巻：<input type="text" name="read"><br>
 			持っている巻：<input type="text" name="have"><br>

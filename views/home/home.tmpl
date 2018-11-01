@@ -11,6 +11,7 @@
 	<h3>{{ .name }}</h3><br>
 	<table>
 		<tr>
+			<td>画像</td>
 			<td>タイトル</td>
 			<td>読了</td>
 			<td>取得巻</td>
@@ -19,6 +20,7 @@
 		</tr>
 		{{ range .Book }}
 		<tr>
+			<td><img src="{{ .ImgPath }}"></td>
 			<td>{{ .Name }}</td>
 			<td>{{ .Read }}</td>
 			<td>{{ .Have }}</td>

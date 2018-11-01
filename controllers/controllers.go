@@ -7,7 +7,10 @@ import (
 	"fmt"
 	"crypto/sha256"
 	"io"
+	"os"
 	"strconv"
+	"syscall"
+	"mime/multipart"
 
 	m "book_manage/models"
 )
@@ -100,6 +103,14 @@ func PostSignUp(c *gin.Context) {
 		c.SetCookie("secret", session, 0, "", domain, false, false)
 
 		m.CreateTable(name+"booktable")
+		path := "./assets/img/"+name
+		fmt.Println(path)
+		fmt.Println(syscall.Getuid())
+		err = os.MkdirAll(path, 0750)
+		if err != nil {
+			fmt.Println(err)
+			panic(err)
+		}
 		c.Redirect(http.StatusSeeOther, "/home")
 	} else {
 		fmt.Println(err)
@@ -159,6 +170,39 @@ func PostRecord(c *gin.Context) {
 	if err != nil {
 		c.Redirect(http.StatusSeeOther, "/login")
 	}
+	var imgPath string
+	imgTmp, err := c.FormFile("img")
+	if err != nil {
+		imgPath = "./assets/img/No_img.jpg"
+	} else {
+		// ファイル名の重複を考えない
+		path := "./assets/img/"+user+"/"+imgTmp.Filename
+		/*
+		for {
+			err := isFileExist(path)
+			if err == nil {
+				break
+			}
+		}
+		*/
+		imgPath = path
+		var file *os.File
+		file, err = os.Create(imgPath)
+		if err != nil {
+			fmt.Println(err)
+			panic(err)
+		}
+		defer file.Close()
+		img, e := imgTmp.Open()
+		if e != nil {
+			panic(err)
+		}
+		defer img.Close()
+		_, err = io.Copy(file, img)
+		if err != nil {
+			panic(err)
+		}
+	}
 	title := c.PostForm("title")
 	readString := c.PostForm("read")
 	haveString := c.PostForm("have")
@@ -179,7 +223,7 @@ func PostRecord(c *gin.Context) {
 		stopFlag = true
 	}
 	if !stopFlag {
-		book := m.BookTable{Name: title, Read: read, Have: have}
+		book := m.BookTable{ImgPath: imgPath, Name: title, Read: read, Have: have}
 		m.AddRecord(user+"booktable", &book)
 		c.Redirect(http.StatusSeeOther, "/home")
 	}
@@ -245,6 +289,36 @@ func PostChange(c *gin.Context) {
 	}
 	idStr := c.PostForm("id")
 	id, _ := strconv.Atoi(idStr)
+
+	// 画像の実態を取得
+	imgTmp, e := c.FormFile("img")
+	// 画像があれば
+	if e == nil {
+		// 画像のパスを生成
+		imgPath := "./assets/img/"+user+"/"+imgTmp.Filename
+		// 画像をオープン
+		var img multipart.File
+		img, err = imgTmp.Open()
+		if err != nil {
+			fmt.Println(err)
+			panic(err)
+		}
+		defer img.Close()
+
+		// サーバーに保存するファイルを作成
+		var file *os.File
+		file, err = os.Create(imgPath)
+		if err != nil {
+			fmt.Println(err)
+			panic(err)
+		}
+		// サーバーに画像を保存する
+		_, err = io.Copy(file, img)
+		if err != nil {
+			fmt.Println(err)
+			panic(err)
+		}
+	}
 	name := c.PostForm("name")
 	if name == "" {
 		c.Redirect(http.StatusSeeOther, "/home")
@@ -262,7 +336,7 @@ func PostChange(c *gin.Context) {
 		c.Redirect(http.StatusSeeOther, "/home")
 	}
 	//book := m.BookTable{Id: id, Name: name, Read: read, Have: have}
-	book := m.BookTable{Name: name, Read: read, Have: have}
+	book := m.BookTable{ImgPath: imgPath, Name: name, Read: read, Have: have}
 	fmt.Println(book)
 	err = m.UpdateRecord(user+"booktable", &book, id)
 	if err != nil {

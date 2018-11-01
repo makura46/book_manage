@@ -17,7 +17,8 @@ type User struct {
 
 type BookTable struct {
 	Id			int		`gorm:"column:id;primary_key;NOT NULL;AUTO_INCREMENT"`
-	Name		string	`gorm:"column:bookname;type:varchar(256);`
+	ImgPath		string	`gorm:"column:imgpath;type:varchar(256)"`
+	Name		string	`gorm:"column:bookname;type:varchar(256)"`
 	Read		int		`gorm:"column:read;type:int"`
 	Have		int		`gorm:"column:have;type:int"`
 }

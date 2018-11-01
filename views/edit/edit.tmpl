@@ -2,7 +2,8 @@
 
 </head>
 <body>
-	<form method="POST" action="/change">
+	<form method="POST" action="/change" enctype="multipart/form-data">
+		<label id="img">画像：</label><input id="img" type="file" value="{{ .Book.ImgPath }}" name="img"><br>
 		<label id="name">タイトル：</label><input id="name" type="text" value="{{ .Book.Name }}" name="name"><br>
 		<label id="read">読了した巻：</label><input id="read" type="text" value="{{ .Book.Read }}" name="read"><br>
 		<label id="have">持っている巻：</label><input id="have" type="text" value="{{ .Book.Have }}" name="have"><br>
