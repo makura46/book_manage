@@ -73,6 +73,7 @@ func CheckSessionLogin(userName, session string) error {
 }
 
 // ログインチェック
+// ユーザ登録がされているか確認する
 func CheckLogin(name, pass string) error {
 	open()
 	defer db.Close()
@@ -156,6 +157,3 @@ func check(user *User) error {
 	return err
 }
 
-func Show() {
-	fmt.Println(reflect.TypeOf(db))
-}

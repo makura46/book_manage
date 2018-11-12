@@ -18,6 +18,7 @@ func main() {
 
 	r.LoadHTMLGlob("views/**/*")
 	r.Static("/assets", "./assets")
+	r.Static("/vendor", "./vendor")
 
 	r.GET("/", c.Top)
 	r.GET("/login", c.GetLogin)
@@ -33,12 +34,6 @@ func main() {
 	r.POST("/edit", c.PostEdit)
 	r.POST("/change", c.PostChange)
 
-	r.GET("/test", c.Test)
-	r.GET("/setCookie", c.SetCookie)
-	/*
-	r.GET("/getCookie", c.GetCookie)
-	r.GET("deleteCookie", c.DeleteCookie)
-	*/
 
 	r.Run(":8080")
 }
