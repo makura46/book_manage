@@ -1,21 +1,41 @@
 {{ template "header" .}}
 
-</head>
 <body>
 
-<h3>ようこそ{{ .user }}</h3>
-	
-	<center>
-		<form method="POST" action="" enctype="multipart/form-data">
-			画像：<input type="file" name="img"><br>
-			タイトル：<input type="text" name="title"><br>
-			読了した巻：<input type="text" name="read"><br>
-			持っている巻：<input type="text" name="have"><br>
-			<input type="submit" value="追加">
-		</form>
-	</center><br>
-	<form method="GET" action="/home">
-		<input type="submit" value="戻る">
-	</form>
+	<header>
+		<div class="bg-secondary">
+			<div class="text-left text-white display-4 pl-4">
+				BOOK MANAGE
+			</div>
+		</div>
+	</header>
+
+	<div class="mt-4">
+		<div class="text-center bg-info mx-auto rounded" style="width: 600px;">
+			<h2 class="text-white pt-4">新規書籍登録</h2>
+			<form method="POST" action="" enctype="multipart/form-data">
+				<div class="formgroup mx-5 text-left">
+					<label for="img" class="text-white">画像</label>
+					<input type="file" id="img" name="img">
+				</div>
+				<div class="formgroup mx-5 my-3 text-left">
+					<label for="title" class="text-white">タイトル</label>
+					<input type="text" name="title" id="title" class="form-control">
+				</div>
+				<div class="formgroup mx-5 my-3 text-left">
+					<label for="read" class="text-white">読了した巻</label>
+					<input type="text" name="read" id="read" class="form-control">
+				</div>
+				<div class="formgroup mx-5 my-3 text-left">
+					<label for="have" class="text-white">持っている巻</label>
+					<input type="text" name="have" id="have" class="form-control">
+				</div>
+				<div>
+					<a href="/home" class="btn btn-danger mr-4">戻る</a>
+					<input type="submit" value="追加" class="btn btn-danger my-4">
+				</div>
+			</form>
+		</div>
+	</div>
 
 {{ template "footer" }}

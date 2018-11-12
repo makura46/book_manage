@@ -1,45 +1,55 @@
 {{ template "header" .}}
-</head>
 
 <body>
 	<header>
-		<!--<a href="/logout"><h3>ログアウト</h3></a>-->
-		<form action="/logout" method="GET">
-			<input type="submit" value="ログアウト">
-		</form>
+		<div class="bg-secondary">
+			<div class="row">
+				<div class="text-white display-4 col-sm-6 pl-4">
+					BOOK MANAGE
+				</div>
+				<div class="text-white text-right col-sm-6 my-auto">
+					<a href="/logout" class="btn btn-primary mr-4">ログアウト</a>
+				</div>
+			</div>
+		</div>
 	</header>
-	<h3>{{ .name }}</h3><br>
-	<table>
-		<tr>
-			<td>画像</td>
-			<td>タイトル</td>
-			<td>読了</td>
-			<td>取得巻</td>
-			<td></td>
-			<td></td>
-		</tr>
+
+	<div class="ml-4 my-4 row">
+		<div class="col-sm-6 text-left">
+			<h3 class="py-3 px-3 text-white bg-primary rounded" style="display: inline-block;">ようこそ{{ .name }}</h3>
+		</div>
+		<div class="col-sm-6 text-right pr-5">
+			<form method="GET" action="/addrecord">
+				<input type="submit" value="書籍追加" class="btn btn-danger">
+			</form>
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="row">
 		{{ range .Book }}
-		<tr>
-			<td><img src="{{ .ImgPath }}"></td>
-			<td>{{ .Name }}</td>
-			<td>{{ .Read }}</td>
-			<td>{{ .Have }}</td>
-			<td>
-				<form method="POST" action="/delete">
-					<input type="submit" value="削除"></td>
-					<input type="hidden" name="id" value="{{ .Id }}">
-				</form>
-			</td>
-			<td>
-				<form method="POST" action="/edit">
-					<input type="submit" value="変更"></td>
-					<input type="hidden" name="id" value="{{ .Id }}">
-				</form>
-			</td>
-		</tr>
+			<div class="rounded bg-secondary text-center  col-xs m-3" style="width: 200px; ">
+				<p class="text-white mt-3 font-weight-bold">{{ .Name }}</p>
+				<img src="{{ .ImgPath }}" class="mb-3"  width="95%" style="object-fit: contain;">
+				<div class="mb-3 mx-3">
+					<ul class="list-group">
+						<li class="list-group-item">読了 <span class="font-weight-bold text-danger" style="font-size: 20px;">{{ .Read }}</span> 巻</li>
+						<li class="list-group-item">取得 <span class="font-weight-bold text-danger" style="font-size: 20px;">{{ .Have }}</span> 巻</li>
+					</ul>
+				</div>
+				<div class="btn-group mx-auto mb-2">
+					<form method="post" action="/edit">
+						<input type="submit" class="btn btn-primary" value="変更">
+						<input type="hidden" name="id" value="{{ .Id }}">
+					</form>
+					<form method="post" action="/delete">
+						<input type="submit" class="btn btn-primary" value="削除">
+						<input type="hidden" name="id" value="{{ .Id }}">
+					</form>
+				</div>
+			</div>
 		{{ end }}
-	</table>
-	<form method="GET" action="/addrecord">
-		<input type="submit" value="書籍追加">
-	</form>
+		</div>
+	</div>
+
 {{ template "footer"}}
