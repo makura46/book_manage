@@ -16,10 +16,12 @@ func AddRecord(c *gin.Context) {
 	user, secret, err := sessionCheck(c, "user", "secret")
 	if err != nil {
 		c.Redirect(http.StatusSeeOther, "/login")
+		return
 	}
 	err = m.CheckSessionLogin(user, secret)
 	if err != nil {
 		c.Redirect(http.StatusSeeOther, "/login")
+		return
 	}
 	c.HTML(http.StatusOK, "addrecord.tmpl", gin.H{"title": "AddRecord", "user": user})
 }
@@ -28,10 +30,12 @@ func PostRecord(c *gin.Context) {
 	user, secret, err := sessionCheck(c, "user", "secret")
 	if err != nil {
 		c.Redirect(http.StatusSeeOther, "/login")
+		return
 	}
 	err = m.CheckSessionLogin(user, secret)
 	if err != nil {
 		c.Redirect(http.StatusSeeOther, "/login")
+		return
 	}
 	var imgPath string
 	imgTmp, err := c.FormFile("img")
@@ -69,25 +73,22 @@ func PostRecord(c *gin.Context) {
 	title := c.PostForm("title")
 	readString := c.PostForm("read")
 	haveString := c.PostForm("have")
-	stopFlag := false
 	if title == "" {
 		c.HTML(http.StatusOK, "addrecord.tmpl", gin.H{"title": "AddRecord", "user": user})
-		stopFlag = true
+		return
 	}
 	var read, have int
 	read, err = strconv.Atoi(readString)
-	if err != nil && !stopFlag {
+	if err != nil {
 		c.HTML(http.StatusOK, "addrecord.tmpl", gin.H{"title": "AddRecord", "user": user})
-		stopFlag = true
+		return
 	}
 	have, err = strconv.Atoi(haveString)
-	if err != nil && !stopFlag {
+	if err != nil {
 		c.HTML(http.StatusOK, "addrecord.tmpl", gin.H{"title": "AddRecord", "user": user})
-		stopFlag = true
+		return
 	}
-	if !stopFlag {
-		book := m.BookTable{ImgPath: imgPath, Name: title, Read: read, Have: have}
-		m.AddRecord(user+"booktable", &book)
-		c.Redirect(http.StatusSeeOther, "/home")
-	}
+	book := m.BookTable{ImgPath: imgPath, Name: title, Read: read, Have: have}
+	m.AddRecord(user+"booktable", &book)
+	c.Redirect(http.StatusSeeOther, "/home")
 }

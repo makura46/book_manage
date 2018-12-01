@@ -18,20 +18,24 @@ func PostEdit(c *gin.Context) {
 	user, secret, err := sessionCheck(c, "user", "secret")
 	if err != nil {
 		c.Redirect(http.StatusSeeOther, "/login")
+		return
 	}
 	err = m.CheckSessionLogin(user, secret)
 	if err != nil {
 		c.Redirect(http.StatusSeeOther, "/login")
+		return
 	}
 	idStr := c.PostForm("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		c.Redirect(http.StatusSeeOther, "/home")
+		return
 	}
 	var bookData *m.BookTable
 	bookData, err = m.GetBookData(user+"booktable", id)
 	if err != nil {
 		c.Redirect(http.StatusSeeOther,  "/home")
+		return
 	}
 	fmt.Println("----show bookData----")
 	fmt.Println(bookData)
@@ -44,10 +48,12 @@ func PostChange(c *gin.Context) {
 	user, secret, err := sessionCheck(c, "user", "secret")
 	if err != nil {
 		c.Redirect(http.StatusSeeOther, "/login")
+		return
 	}
 	err = m.CheckSessionLogin(user, secret)
 	if err != nil {
 		c.Redirect(http.StatusSeeOther, "/login")
+		return
 	}
 	idStr := c.PostForm("id")
 	id, _ := strconv.Atoi(idStr)
@@ -90,18 +96,21 @@ func PostChange(c *gin.Context) {
 	name := c.PostForm("name")
 	if name == "" {
 		c.Redirect(http.StatusSeeOther, "/home")
+		return
 	}
 	readStr := c.PostForm("read")
 	read, err := strconv.Atoi(readStr)
 	if err != nil {
 		fmt.Println("error")
 		c.Redirect(http.StatusSeeOther, "/home")
+		return
 	}
 	haveStr := c.PostForm("have")
 	have, err := strconv.Atoi(haveStr)
 	if err != nil {
 		fmt.Println("error have")
 		c.Redirect(http.StatusSeeOther, "/home")
+		return
 	}
 	//book := m.BookTable{Id: id, Name: name, Read: read, Have: have}
 	book := m.BookTable{ImgPath: imgPath, Name: name, Read: read, Have: have}

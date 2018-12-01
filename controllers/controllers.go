@@ -11,10 +11,8 @@ import (
 )
 
 func Top(c *gin.Context) {
-	css := []string{"assets/css/top/top.css"}
 	c.HTML(http.StatusOK, "top.tmpl", gin.H{
 		"title": "Top page",
-		"CSS": css,
 	})
 }
 
@@ -30,15 +28,18 @@ func Delete(c *gin.Context) {
 	user, secret, err := sessionCheck(c, "user", "secret")
 	if err != nil {
 		c.Redirect(http.StatusSeeOther, "/login")
+		return
 	}
 	err = m.CheckSessionLogin(user, secret)
 	if err != nil {
 		c.Redirect(http.StatusSeeOther, "/login")
+		return
 	}
 	idString := c.PostForm("id")
 	id, err := strconv.Atoi(idString)
 	if err != nil {
 		c.Redirect(http.StatusSeeOther, "/home")
+		return
 	}
 	book := m.BookTable{Id: id}
 	err = m.DeleteBook(user+"booktable", &book)
@@ -68,5 +69,4 @@ func sessionCheck(c *gin.Context, nameU, nameS string) (valueU, valueS string, e
 	}
 	return valueU, valueS, err
 }
-
 

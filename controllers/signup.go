@@ -27,6 +27,7 @@ func PostSignUp(c *gin.Context) {
 	if name == "" {
 		c.Redirect(http.StatusSeeOther, "/signup")
 		err = errors.New("login ID lose")
+		return
 	}
 
 	password := c.PostForm("password")

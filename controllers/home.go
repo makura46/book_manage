@@ -14,11 +14,13 @@ func GetHome(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err)
 		c.Redirect(http.StatusSeeOther, "/login")
+		return
 	}
 	session, err := c.Cookie("secret")
 	if err != nil {
 		fmt.Println(err)
 		c.Redirect(http.StatusSeeOther, "/login")
+		return
 	}
 	err = m.CheckSessionLogin(name, session)
 	if err != nil {
